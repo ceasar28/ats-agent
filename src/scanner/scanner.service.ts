@@ -110,7 +110,7 @@ Use a concise, professional tone and present your findings in an organized manne
       const AIresponse2 = response2.choices[0].message?.content.trim();
       return {
         AIresponse,
-        tokenDetails: { ...tokenAnalyticData, isHoneyPort: AIresponse2 },
+        tokenDetails: { ...tokenAnalyticData, isHoneyPot: AIresponse2 },
       };
     } catch (error) {
       console.error('Error generating reply:', error);

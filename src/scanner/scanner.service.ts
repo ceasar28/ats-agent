@@ -15,28 +15,42 @@ export class ScannerService {
 
   async tokenAnalyzer(contract: string): Promise<any> {
     try {
-      const baseUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/metadata`;
+      const metadataUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/metadata`;
+      const priceUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/pairs`;
 
-      const resp = await fetch(baseUrl, {
-        method: 'GET',
-        headers: { 'X-API-Key': process.env.MORALIS_KEY },
-      });
+      // Fetch both metadata and price data concurrently
+      const [respMetadata, respPrice] = await Promise.all([
+        fetch(metadataUrl, {
+          method: 'GET',
+          headers: { 'X-API-Key': process.env.MORALIS_KEY },
+        }),
+        fetch(priceUrl, {
+          method: 'GET',
+          headers: { 'X-API-Key': process.env.MORALIS_KEY },
+        }),
+      ]);
 
-      if (!resp) {
-        throw new Error(`Failed to fetch data`);
+      // Check if any response failed
+      if (!respMetadata.ok || !respPrice.ok) {
+        throw new Error('Failed to fetch data from one or both endpoints');
       }
 
-      const data = await resp.json();
-      console.log(data); // Adjust based on how you plan to use the data
+      const metadata = await respMetadata.json();
+      const tokenPrice = await respPrice.json();
 
       // Respond with the collected data
       const tokenAnalyticData = {
-        tokenName: data.name,
-        tokenSymbol: data.symbol,
-        tokenStandard: data.standard,
-        totalSupply: data.totalSupplyFormatted,
-        decimals: data.decimals,
-        isMutable: data.metaplex.isMutable,
+        tokenName: metadata.name,
+        tokenSymbol: metadata.symbol,
+        tokenStandard: metadata.standard,
+        totalSupply: metadata.totalSupplyFormatted,
+        decimals: metadata.decimals,
+        isMutable: metadata.metaplex.isMutable,
+        exchangeName: tokenPrice.pairs.exchangeName,
+        pairLabel: tokenPrice.pairs.pairLabel,
+        usdPrice: tokenPrice.pairs.usdPrice,
+        marketCap:
+          tokenPrice.pairs.usdPrice * parseFloat(metadata.totalSupplyFormatted),
       };
 
       const AgentRole = `You are an AI agent specializing in Solana blockchain analysis. Your task is to analyze an SPL token based on the provided on-chain data and generate detailed insights, key findings, and future projections. Please present the response in a structured format.
@@ -47,12 +61,18 @@ Here is the SPL token data:
 - Total Supply: ${tokenAnalyticData.totalSupply}
 - isMutabel: ${tokenAnalyticData.isMutable}
 - Token standard: ${tokenAnalyticData.tokenStandard}
-- Decimal" ${tokenAnalyticData.decimals}
+- Decimal: ${tokenAnalyticData.decimals}
+- price : $${tokenAnalyticData.usdPrice}
+- marketCap by exchange (${tokenAnalyticData.exchangeName}): ${tokenAnalyticData.marketCap}
+
+also scrap the internet to gather more info and check against the provided info of the token
 
 Please provide the following:
-1. **Token Insights**: Key observations about the token.
-2. **Projections**: Predict future trends in growth, market interest, and volatility.
-3. **Actionable Advice**: Recommendations for token holders or potential investors.
+1. **Summary**: Key observations about the token and summary.
+2. ** Token info: info about the token, like name, symbor, decimal, total supply, ismutable
+3. **Warnings**: Predict future trends in growth, market interest, and volatility. provide warning if need by or no warning.
+4. **Actionable Advice**: Recommendations for token holders or potential investors.
+5. **Value and Market Capitalization**:  give the price of the token in dollars and the Market captilization
 
 Use a concise, professional tone and present your findings in an organized manner.`;
 

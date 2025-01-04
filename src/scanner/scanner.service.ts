@@ -18,24 +18,39 @@ export class ScannerService {
       const metadataUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/metadata`;
       const priceUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/pairs`;
 
-      // Fetch both metadata and price data concurrently
-      const [respMetadata, respPrice] = await Promise.all([
-        fetch(metadataUrl, {
-          method: 'GET',
-          headers: { 'X-API-Key': process.env.MORALIS_KEY },
-        }),
-        fetch(priceUrl, {
-          method: 'GET',
-          headers: { 'X-API-Key': process.env.MORALIS_KEY },
-        }),
-      ]);
+      // Fetch metadata to validate the contract
+      const respMetadata = await fetch(metadataUrl, {
+        method: 'GET',
+        headers: { 'X-API-Key': process.env.MORALIS_KEY },
+      });
 
-      // Check if any response failed
-      if (!respMetadata.ok || !respPrice.ok) {
-        throw new Error('Failed to fetch data from one or both endpoints');
+      // Check if metadata request was successful
+      if (!respMetadata.ok) {
+        return { error: 'Invalid contract format or metadata not found' };
       }
 
       const metadata = await respMetadata.json();
+
+      // Validate the metadata to ensure it's an SPL token
+      if (
+        !metadata.name ||
+        !metadata.symbol ||
+        !metadata.totalSupplyFormatted ||
+        !metadata.decimals
+      ) {
+        return { error: 'Invalid contract: Not a valid Solana SPL token' };
+      }
+
+      // Fetch price data concurrently after validation
+      const respPrice = await fetch(priceUrl, {
+        method: 'GET',
+        headers: { 'X-API-Key': process.env.MORALIS_KEY },
+      });
+
+      if (!respPrice.ok) {
+        throw new Error('Failed to fetch price data');
+      }
+
       const tokenPrice = await respPrice.json();
 
       // Respond with the collected data
@@ -44,14 +59,14 @@ export class ScannerService {
         tokenSymbol: metadata.symbol,
         totalSupply: metadata.totalSupplyFormatted,
         decimals: metadata.decimals,
-        exchangeName: tokenPrice.pairs[0].exchangeName,
-        pairLabel: tokenPrice.pairs[0].pairLabel,
-        usdPrice: tokenPrice.pairs[0].usdPrice,
+        exchangeName: tokenPrice.pairs?.[0]?.exchangeName || 'N/A',
+        pairLabel: tokenPrice.pairs?.[0]?.pairLabel || 'N/A',
+        usdPrice: tokenPrice.pairs?.[0]?.usdPrice || 0,
         marketCap:
-          tokenPrice.pairs[0].usdPrice *
+          (tokenPrice.pairs?.[0]?.usdPrice || 0) *
           parseFloat(metadata.totalSupplyFormatted),
       };
-      console.log(tokenAnalyticData);
+
       const AgentRole = `You are an AI agent specializing in Solana blockchain analysis. Your task is to analyze an SPL token based on the provided on-chain data and generate detailed insights, key findings, and future projections. Please present the response in a structured format.
 
 Here is the SPL token data:
@@ -62,14 +77,12 @@ Here is the SPL token data:
 - price : $${tokenAnalyticData.usdPrice}
 - marketCap by exchange (${tokenAnalyticData.exchangeName}): ${tokenAnalyticData.marketCap}
 
-
 Please provide the following:
 1. **Summary**: Key observations about the token and summary.
-2. ** Token info: info about the token, like name, symbor, decimal, total supply, ismutable
-3. **Warnings**: Predict future trends in growth, market interest, and volatility. provide warning if need by or no warning.
+2. ** Token info: info about the token, like name, symbol, decimal, total supply, ismutable
+3. **Warnings**: Predict future trends in growth, market interest, and volatility. Provide warnings if necessary or indicate no warnings.
 4. **Actionable Advice**: Recommendations for token holders or potential investors.
-5. **Value and Market Capitalization**:  give the price of the token in dollars and the Market captilization
-
+5. **Value and Market Capitalization**: Provide the price of the token in dollars and the Market capitalization.
 
 Use a concise, professional tone and present your findings in an organized manner.`;
 
@@ -81,12 +94,27 @@ Use a concise, professional tone and present your findings in an organized manne
         model: 'gpt-4o-mini',
       });
 
+      const response2 = await this.openai.chat.completions.create({
+        messages: [
+          { role: 'assistant', content: AgentRole },
+          {
+            role: 'user',
+            content:
+              'just answer true or false, is this token a honeypot token based on your analysis of the giving data, you answer must be true or false nothing else',
+          },
+        ],
+        model: 'gpt-4o-mini',
+      });
+
       const AIresponse = response.choices[0].message?.content.trim();
-      //   console.log(reply);
-      return { AIresponse, tokenDetails: tokenAnalyticData };
+      const AIresponse2 = response2.choices[0].message?.content.trim();
+      return {
+        AIresponse,
+        tokenDetails: { ...tokenAnalyticData, isHoneyPort: AIresponse2 },
+      };
     } catch (error) {
       console.error('Error generating reply:', error);
-      return 'There was an error processing request...';
+      return { error: 'There was an error processing the request...' };
     }
   }
 }

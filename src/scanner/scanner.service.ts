@@ -42,30 +42,26 @@ export class ScannerService {
       const tokenAnalyticData = {
         tokenName: metadata.name,
         tokenSymbol: metadata.symbol,
-        tokenStandard: metadata.standard,
         totalSupply: metadata.totalSupplyFormatted,
         decimals: metadata.decimals,
-        isMutable: metadata.metaplex.isMutable,
-        exchangeName: tokenPrice.pairs.exchangeName,
-        pairLabel: tokenPrice.pairs.pairLabel,
-        usdPrice: tokenPrice.pairs.usdPrice,
+        exchangeName: tokenPrice.pairs[0].exchangeName,
+        pairLabel: tokenPrice.pairs[0].pairLabel,
+        usdPrice: tokenPrice.pairs[0].usdPrice,
         marketCap:
-          tokenPrice.pairs.usdPrice * parseFloat(metadata.totalSupplyFormatted),
+          tokenPrice.pairs[0].usdPrice *
+          parseFloat(metadata.totalSupplyFormatted),
       };
-
+      console.log(tokenAnalyticData);
       const AgentRole = `You are an AI agent specializing in Solana blockchain analysis. Your task is to analyze an SPL token based on the provided on-chain data and generate detailed insights, key findings, and future projections. Please present the response in a structured format.
 
 Here is the SPL token data:
 - Token Name: ${tokenAnalyticData.tokenName}
 - Symbol: ${tokenAnalyticData.tokenSymbol}
 - Total Supply: ${tokenAnalyticData.totalSupply}
-- isMutabel: ${tokenAnalyticData.isMutable}
-- Token standard: ${tokenAnalyticData.tokenStandard}
 - Decimal: ${tokenAnalyticData.decimals}
 - price : $${tokenAnalyticData.usdPrice}
 - marketCap by exchange (${tokenAnalyticData.exchangeName}): ${tokenAnalyticData.marketCap}
 
-also scrap the internet to gather more info and check against the provided info of the token
 
 Please provide the following:
 1. **Summary**: Key observations about the token and summary.
@@ -73,6 +69,7 @@ Please provide the following:
 3. **Warnings**: Predict future trends in growth, market interest, and volatility. provide warning if need by or no warning.
 4. **Actionable Advice**: Recommendations for token holders or potential investors.
 5. **Value and Market Capitalization**:  give the price of the token in dollars and the Market captilization
+
 
 Use a concise, professional tone and present your findings in an organized manner.`;
 
@@ -84,9 +81,9 @@ Use a concise, professional tone and present your findings in an organized manne
         model: 'gpt-4o-mini',
       });
 
-      const reply = response.choices[0].message?.content.trim();
+      const AIresponse = response.choices[0].message?.content.trim();
       //   console.log(reply);
-      return { reply };
+      return { AIresponse, tokenDetails: tokenAnalyticData };
     } catch (error) {
       console.error('Error generating reply:', error);
       return 'There was an error processing request...';

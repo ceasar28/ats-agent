@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 @Injectable()
@@ -78,13 +79,15 @@ Here is the SPL token data:
 - marketCap by exchange (${tokenAnalyticData.exchangeName}): ${tokenAnalyticData.marketCap}
 
 Please provide the following:
-1. **Summary**: Key observations about the token and summary.
-2. ** Token info: info about the token, like name, symbol, decimal, total supply, ismutable
-3. **Warnings**: Predict future trends in growth, market interest, and volatility. Provide warnings if necessary or indicate no warnings.
-4. **Actionable Advice**: Recommendations for token holders or potential investors.
-5. **Value and Market Capitalization**: Provide the price of the token in dollars and the Market capitalization.
+{
+- summary:Key observations about the token and summary,
+- tokenInfo:info about the token, like name, symbol, decimal, total supply, ismutable,
+- Warnings: Predict future trends in growth, market interest, and volatility. Provide warnings if necessary or indicate no warnings,
+- actionableAdvice: Recommendations for token holders or potential investors,
+- ValueAndMarketCapitalization:Provide the price of the token in dollars and the Market capitalization.
+}
 
-Use a concise, professional tone and present your findings in an organized manner.`;
+Use a concise, professional tone and present your findings in an organized manner. and always let it be a stringified object is the format {...} and never json{...}`;
 
       const response = await this.openai.chat.completions.create({
         messages: [
@@ -109,7 +112,7 @@ Use a concise, professional tone and present your findings in an organized manne
       const AIresponse = response.choices[0].message?.content.trim();
       const AIresponse2 = response2.choices[0].message?.content.trim();
       return {
-        AIresponse,
+        AIresponse: JSON.parse(AIresponse),
         tokenDetails: { ...tokenAnalyticData, isHoneyPot: AIresponse2 },
       };
     } catch (error) {

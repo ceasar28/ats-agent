@@ -16,13 +16,16 @@ export class ScannerService {
 
   async tokenAnalyzer(contract: string): Promise<any> {
     try {
-      const metadataUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/metadata`;
-      const priceUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/pairs`;
+      //   const metadataUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/metadata`;
+      //   const priceUrl = `https://solana-gateway.moralis.io/token/mainnet/${contract}/pairs`;
+
+      const tokenMetaUrl = `https://pro-api.solscan.io/v2.0/token/meta?address=${contract}`;
+      const holdersUrl = `https://pro-api.solscan.io/v2.0/token/holders?address=${contract}&page=1&page_size=20`;
 
       // Fetch metadata to validate the contract
-      const respMetadata = await fetch(metadataUrl, {
+      const respMetadata = await fetch(tokenMetaUrl, {
         method: 'GET',
-        headers: { 'X-API-Key': process.env.MORALIS_KEY },
+        headers: { token: process.env.SOLSCAN_TOKEN },
       });
 
       // Check if metadata request was successful
@@ -34,38 +37,49 @@ export class ScannerService {
 
       // Validate the metadata to ensure it's an SPL token
       if (
-        !metadata.name ||
-        !metadata.symbol ||
-        !metadata.totalSupplyFormatted ||
-        !metadata.decimals
+        !metadata.data.name ||
+        !metadata.data.symbol ||
+        !metadata.data.supply ||
+        !metadata.data.decimals
       ) {
         return { error: 'Invalid contract: Not a valid Solana SPL token' };
       }
 
-      // Fetch price data concurrently after validation
-      const respPrice = await fetch(priceUrl, {
+      // Fetch holders data concurrently after validation
+      const respHolders = await fetch(holdersUrl, {
         method: 'GET',
-        headers: { 'X-API-Key': process.env.MORALIS_KEY },
+        headers: { token: process.env.SOLSCAN_TOKEN },
       });
 
-      if (!respPrice.ok) {
+      if (!respHolders.ok) {
         throw new Error('Failed to fetch price data');
       }
 
-      const tokenPrice = await respPrice.json();
+      const Holders = await respHolders.json();
+
+      const calculateOwnership = (holders, totalSupply) => {
+        return holders.map((holder) => {
+          const percentage = (holder.amount / totalSupply) * 100;
+          return {
+            ...holder,
+            percentage: percentage.toFixed(2), // Round to 2 decimal places for readability
+          };
+        });
+      };
 
       // Respond with the collected data
       const tokenAnalyticData = {
-        tokenName: metadata.name,
-        tokenSymbol: metadata.symbol,
-        totalSupply: metadata.totalSupplyFormatted,
-        decimals: metadata.decimals,
-        exchangeName: tokenPrice.pairs?.[0]?.exchangeName || 'N/A',
-        pairLabel: tokenPrice.pairs?.[0]?.pairLabel || 'N/A',
-        usdPrice: tokenPrice.pairs?.[0]?.usdPrice || 0,
-        marketCap:
-          (tokenPrice.pairs?.[0]?.usdPrice || 0) *
-          parseFloat(metadata.totalSupplyFormatted),
+        tokenName: metadata.data.name,
+        tokenSymbol: metadata.data.symbol,
+        totalSupply: metadata.data.supply,
+        decimals: metadata.data.decimals,
+        tokenHoldersCount: metadata.data.holder,
+        creatorAddress: metadata.data.creator,
+        mintSignature: metadata.data.create_tx,
+        createdTime: metadata.data.created_time,
+        price: metadata.data.price,
+        marketCap: metadata.data.market_cap,
+        marketCapRank: metadata.data.market_cap_rank,
       };
 
       const AgentRole = `You are an AI agent specializing in Solana blockchain analysis. Your task is to analyze an SPL token based on the provided on-chain data and generate detailed insights, key findings, and future projections. Please present the response in a structured format.
@@ -75,8 +89,9 @@ Here is the SPL token data:
 - Symbol: ${tokenAnalyticData.tokenSymbol}
 - Total Supply: ${tokenAnalyticData.totalSupply}
 - Decimal: ${tokenAnalyticData.decimals}
-- price : $${tokenAnalyticData.usdPrice}
-- marketCap by exchange (${tokenAnalyticData.exchangeName}): ${tokenAnalyticData.marketCap}
+- price : $${tokenAnalyticData.price}
+- marketCap : ${tokenAnalyticData.marketCap}
+- numbers of holders : ${tokenAnalyticData.tokenHoldersCount}
 
 Please provide the following:
 {
@@ -111,9 +126,14 @@ Use a concise, professional tone and present your findings in an organized manne
 
       const AIresponse = response.choices[0].message?.content.trim();
       const AIresponse2 = response2.choices[0].message?.content.trim();
+
       return {
         AIresponse: JSON.parse(AIresponse),
         tokenDetails: { ...tokenAnalyticData, isHoneyPot: AIresponse2 },
+        tokenDestribution: calculateOwnership(
+          Holders.data.items,
+          +tokenAnalyticData.totalSupply,
+        ),
       };
     } catch (error) {
       console.error('Error generating reply:', error);

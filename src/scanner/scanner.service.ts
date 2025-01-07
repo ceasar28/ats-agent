@@ -67,6 +67,43 @@ export class ScannerService {
         });
       };
 
+      const isContractBundled = (
+        tokenDistribution,
+        tolerance = 0.01,
+        minConsecutive = 7,
+      ) => {
+        // Sort the array based on percentages (convert them to numbers for comparison)
+        const sortedDistribution = tokenDistribution.sort(
+          (a, b) => parseFloat(a.percentage) - parseFloat(b.percentage),
+        );
+
+        let consecutiveCount = 1; // Tracks consecutive similar wallets
+
+        for (let i = 1; i < sortedDistribution.length; i++) {
+          const prevPercentage = parseFloat(
+            sortedDistribution[i - 1].percentage,
+          );
+          const currentPercentage = parseFloat(
+            sortedDistribution[i].percentage,
+          );
+
+          // Check if the percentages are within the tolerance
+          if (Math.abs(currentPercentage - prevPercentage) <= tolerance) {
+            consecutiveCount++;
+            // If we find at least the required number of consecutive similar wallets
+            if (consecutiveCount >= minConsecutive) {
+              return true;
+            }
+          } else {
+            // Reset the count if the streak is broken
+            consecutiveCount = 1;
+          }
+        }
+
+        // If no bundle is found
+        return false;
+      };
+
       // Respond with the collected data
       const tokenAnalyticData = {
         tokenName: metadata.data.name,
@@ -126,14 +163,15 @@ Use a concise, professional tone and present your findings in an organized manne
 
       const AIresponse = response.choices[0].message?.content.trim();
       const AIresponse2 = response2.choices[0].message?.content.trim();
-
+      const tokenDestribution = calculateOwnership(
+        Holders.data.items,
+        +tokenAnalyticData.totalSupply,
+      );
       return {
         AIresponse: JSON.parse(AIresponse),
         tokenDetails: { ...tokenAnalyticData, isHoneyPot: AIresponse2 },
-        tokenDestribution: calculateOwnership(
-          Holders.data.items,
-          +tokenAnalyticData.totalSupply,
-        ),
+        tokenDestribution,
+        isContractBundled: isContractBundled(tokenDestribution),
       };
     } catch (error) {
       console.error('Error generating reply:', error);

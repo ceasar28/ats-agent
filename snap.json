@@ -1,0 +1,190 @@
+{
+  "AIresponse": {
+    "summary": "Space Shiba Inu (SSI) is an SPL token with a relatively low market capitalization and a limited number of holders. The current price indicates it is at a micro-cap stage, and the total supply is substantial, which may lead to potential dilution. Observations suggest a niche community interest but uncertain market traction.",
+    "tokenInfo": {
+      "name": "Space Shiba Inu",
+      "symbol": "SSI",
+      "decimal": 6,
+      "totalSupply": 999657000718515,
+      "immutable": false
+    },
+    "Warnings": "Future trends indicate potential volatility due to low market capitalization and a small holder base. Increased speculation could cause sharp price fluctuations. Caution is advised as the token may be subject to pump-and-dump schemes or fail to gain wider market interest.",
+    "actionableAdvice": "For current holders, consider setting stop-loss limits to mitigate potential losses. Potential investors should conduct thorough market research and evaluate the project's goals, community engagement, and roadmap before investing. Diversification is recommended due to the inherent risks associated with micro-cap tokens.",
+    "ValueAndMarketCapitalization": "Price of the token: $0.000006570121046709745; Market Capitalization: $6567.867499911454"
+  },
+  "tokenDetails": {
+    "tokenName": "Space Shiba Inu",
+    "tokenSymbol": "SSI",
+    "totalSupply": "999657000718515",
+    "decimals": 6,
+    "tokenHoldersCount": 200,
+    "creatorAddress": "8AgkfDnqgTkKS6XWsWvn8wK6P9jJK9v3ATM3BvFfLQjC",
+    "mintSignature": "kCmgybtu6Cxsr6Twdgt2GF4xwCLRn1LJR8Z5NviXJswj5YzHSavZ6Gt7NU1iVXeyN93iFCRMMqTVUCmR6bS5KND",
+    "createdTime": 1735955949,
+    "price": 0.000006570121046709745,
+    "marketCap": 6567.867499911454,
+    "isHoneyPot": "False"
+  },
+  "tokenDestribution": [
+    {
+      "address": "4yAbQeUuPwdxQA3MoUpsqys7HDbcaGpY655gEr91yE3n",
+      "amount": 978051662061295,
+      "decimals": 6,
+      "owner": "HwX15TbsLyxBCJ4djuCJ1PKjUttYALUSZcSGZfpwFW1c",
+      "rank": 1,
+      "percentage": "97.84"
+    },
+    {
+      "address": "AiRS9mJSPYV9hstU5rUqQ7ctVKavCswNYE5tnWYpmGze",
+      "amount": 4248939735571,
+      "decimals": 6,
+      "owner": "D2N3kGjwAQxoJd6SHgGHGc1nrUaTFNwaxFcX3zCTMBdS",
+      "rank": 2,
+      "percentage": "0.43"
+    },
+    {
+      "address": "6nUQ4UNrQe2noF5yxa4374bREAqD5NpS1oHuL6rpsJaf",
+      "amount": 2169047304732,
+      "decimals": 6,
+      "owner": "mzemvCTXfvdSjEtEyu6dURygHQNCRM2NQAeQG73aMyH",
+      "rank": 3,
+      "percentage": "0.22"
+    },
+    {
+      "address": "CC5BNBGpYBpFVdDDZpjKtbuQrq4G9SJabjwP7dwAKqnN",
+      "amount": 1155059474975,
+      "decimals": 6,
+      "owner": "2BwjKcm52DeAGBCQ3jM5YF98Jo6jFFt337WNqUegUwai",
+      "rank": 4,
+      "percentage": "0.12"
+    },
+    {
+      "address": "fgRS5PxrPfCHRxyAdrPP6RAfNQCdCnt2xYzrTZyR6wa",
+      "amount": 462468113127,
+      "decimals": 6,
+      "owner": "E2EvK5hXUGRNBkwT89SJXX5UoxerDV1DxXq2VqvtccEm",
+      "rank": 5,
+      "percentage": "0.05"
+    },
+    {
+      "address": "9vuQDpxS1KRP2jhQhDUhEkeLQuvy61zdwfydWMBfNhAS",
+      "amount": 442249763482,
+      "decimals": 6,
+      "owner": "D6AL2t8g61agrwhxt231gmjPMwJ3kygHDQfvK72w9ZKx",
+      "rank": 6,
+      "percentage": "0.04"
+    },
+    {
+      "address": "6LJcctKx3UeKFQrhgkHNJWsUYseDq25F3Wmpnq2BFpos",
+      "amount": 441353263364,
+      "decimals": 6,
+      "owner": "Hd95kFSqgZJn6tXMtP32Q96RwLXYgRq2RWkncGXcwbyb",
+      "rank": 7,
+      "percentage": "0.04"
+    },
+    {
+      "address": "FGpkcphnuyitk18szNZ3EVcTMLzppXCjJGdueWThfLsp",
+      "amount": 438989512073,
+      "decimals": 6,
+      "owner": "BAtXCXkvgGzLogPcXT8GTvSrPxQHghpH6BjvMxu5Q6As",
+      "rank": 8,
+      "percentage": "0.04"
+    },
+    {
+      "address": "2wk6dKFLnbNNQGRz3v557xqNpJRDqKNHWPdPZkn9Vkpf",
+      "amount": 437764911159,
+      "decimals": 6,
+      "owner": "CPhqJ5tnkLa8Py5Zb5XTdCRKzDdzddW3WkX3viGuBNBu",
+      "rank": 9,
+      "percentage": "0.04"
+    },
+    {
+      "address": "8KC3wrWFskwLS4qWXkgpR4dZbxWYYR5nBTKuw6oSWoF2",
+      "amount": 437533529451,
+      "decimals": 6,
+      "owner": "Hp68p1z6iqkehwXqCFPnwaubVzr32MoAQgpmd24tqr2L",
+      "rank": 10,
+      "percentage": "0.04"
+    },
+    {
+      "address": "Cy8bRGPEm5ejhfb91xYkggK665P6oNbdZLqkFMQbAEEQ",
+      "amount": 430972515623,
+      "decimals": 6,
+      "owner": "GeatXpLYXJ5AJf2jCUPNKhULvUHFCs86Tbn32G8LQm2q",
+      "rank": 11,
+      "percentage": "0.04"
+    },
+    {
+      "address": "HfAz66R1zJhShhWi9BKXeM9M8K7AXGwjnbKsiro2aGCL",
+      "amount": 430200654870,
+      "decimals": 6,
+      "owner": "2u51sGkCLxZBosGDN3VjHBhqrDy9VQHpedPj76fhkpXW",
+      "rank": 12,
+      "percentage": "0.04"
+    },
+    {
+      "address": "DXPBz2uC2vkfb4yf4htBXZTLmtfjZhYYr22Ke8HAz1h2",
+      "amount": 427708662899,
+      "decimals": 6,
+      "owner": "Fh3X57WxzifoQvX1TnrfkakjSnZoQbYAVHsaVBLPeVnz",
+      "rank": 13,
+      "percentage": "0.04"
+    },
+    {
+      "address": "4KK3rnokTp84E4Vz1Z9NV3XhqQ5wLYao3gGhUEb8usYV",
+      "amount": 422730040266,
+      "decimals": 6,
+      "owner": "FU1feoXQreyreAVyHgUBM7DBPcj4p4RoPkjYevvX8t1i",
+      "rank": 14,
+      "percentage": "0.04"
+    },
+    {
+      "address": "4vCFUntg5mupAVUHiTUFSpZbFRG1RKRwonBtTm1WspcU",
+      "amount": 416962588181,
+      "decimals": 6,
+      "owner": "9aLoTF5kPUqoMHt6jSHaYc4rtNDJtrppT9mUYMUy9TrD",
+      "rank": 15,
+      "percentage": "0.04"
+    },
+    {
+      "address": "3iyE94U7CPWYqSAN2AbJRf18uymmoyXJbyMypasE5rsb",
+      "amount": 408276885333,
+      "decimals": 6,
+      "owner": "5oAxBmv1QtuBDHYXah9KJUAozAtQiopceXEGiEuMbu2x",
+      "rank": 16,
+      "percentage": "0.04"
+    },
+    {
+      "address": "CUjyKm6MgMxASxKrfcqaiRtFQ4y8azAxMsqDGhyKYB9P",
+      "amount": 407650485948,
+      "decimals": 6,
+      "owner": "EbJBS2udh5ppqDqdtKGtfAwZPCsuTZiSAj9JPXMtk1SC",
+      "rank": 17,
+      "percentage": "0.04"
+    },
+    {
+      "address": "5DxzASceBTfeLs5ZHTAnwCj2MxnNX6nCLBXbwNDEWhhG",
+      "amount": 398733428583,
+      "decimals": 6,
+      "owner": "5Rc7ruvHE59NQdviSxJse6cHqmT8hhtaFwfK4t4j9hzm",
+      "rank": 18,
+      "percentage": "0.04"
+    },
+    {
+      "address": "CrFqZ8chCev5LDiCmBjeAF91F1QYvmjdXwC5B4WwBA9E",
+      "amount": 395846129777,
+      "decimals": 6,
+      "owner": "AXK9DqDPW227pLXgkvJN9LZHNWE9br6Ebjc5rrPDuama",
+      "rank": 19,
+      "percentage": "0.04"
+    },
+    {
+      "address": "BzMPRVCXakUob33L74ZtxyLWWHGsAUSzY2znf9YcFHFt",
+      "amount": 327247146691,
+      "decimals": 6,
+      "owner": "GXr5RTnn2H8Z66xYWqyBRLf7SPxaoeF1SPQF3LRbapSw",
+      "rank": 20,
+      "percentage": "0.03"
+    }
+  ]
+}
